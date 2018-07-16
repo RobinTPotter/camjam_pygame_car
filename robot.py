@@ -19,15 +19,17 @@ joystick_name = 'GEN GAME S5'
 print ('testing for favourite named stick {0}'.format(joystick_name))
 
 joystick = None
-STOP_BUTTON = None
+STOP_BUTTON = 10 #None
 
 for jn in range(pygame.joystick.get_count()):
     j = pygame.joystick.Joystick(jn)
-    if j.get_name() is joystick_name: joystick = j
+    print(j.get_name())
+    if j.get_name()==joystick_name: joystick = j
 
 if joystick is None:
     print ('joystick {0} is not found'.format(joystick_name))
 else:
+    joystick.init()
     print ('found {0}'.format(joystick.get_name()))
     print ('get_numaxes {0}'.format(joystick.get_numaxes()))
     print ('get_numballs {0}'.format(joystick.get_numballs()))
@@ -43,6 +45,8 @@ else:
                     if event.type == pygame.JOYBUTTONDOWN:
                         STOP_BUTTON = event.button
                         print ('stop button defined as {0}, you can enter this in your config if you want'.format(STOP_BUTTON))
+                        time.sleep(1)
+                        done = True
         except:
             print('grr!')
 
@@ -71,7 +75,7 @@ class Robot():
         print ('initializing class variables')
 
         # How many times to turn the pin on and off each second
-        self.frequency = 20
+        self.frequency = 10
         # How long the pin stays on each cycle, as a percent
         self.duty_cycle_A = 30
         self.duty_cycle_B = 30
@@ -116,63 +120,65 @@ class Robot():
 
     # Turn all motors off
     def stopmotors(self):
-        self.pwmMotorAForwards.ChangeDutyCycle(stop)
-        self.pwmMotorABackwards.ChangeDutyCycle(stop)
-        self.pwmMotorBForwards.ChangeDutyCycle(stop)
-        self.pwmMotorBBackwards.ChangeDutyCycle(stop)
-        print ('all motors set to {0}'.format(stop))
+        self.pwmMotorAForwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorABackwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorBForwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorBBackwards.ChangeDutyCycle(self.stop)
+        print ('all motors set to {0}'.format(self.stop))
 
     # Turn both motors forwards
     def forwards(self):
-        pwmMotorAForwards.ChangeDutyCycle(self.duty_cycle_A)
-        pwmMotorABackwards.ChangeDutyCycle(self.stop)
-        pwmMotorBForwards.ChangeDutyCycle(self.duty_cycle_B)
-        pwmMotorBBackwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorAForwards.ChangeDutyCycle(self.duty_cycle_A)
+        self.pwmMotorABackwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorBForwards.ChangeDutyCycle(self.duty_cycle_B)
+        self.pwmMotorBBackwards.ChangeDutyCycle(self.stop)
 
     # Turn both motors backwards
     def backwards(self):
-        pwmMotorAForwards.ChangeDutyCycle(self.stop)
-        pwmMotorABackwards.ChangeDutyCycle(self.duty_cycle_A)
-        pwmMotorBForwards.ChangeDutyCycle(self.stop)
-        pwmMotorBBackwards.ChangeDutyCycle(self.duty_cycle_B)
+        self.pwmMotorAForwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorABackwards.ChangeDutyCycle(self.duty_cycle_A)
+        self.pwmMotorBForwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorBBackwards.ChangeDutyCycle(self.duty_cycle_B)
 
     # Turn left
     def left(self):
-        pwmMotorAForwards.ChangeDutyCycle(self.stop)
-        pwmMotorABackwards.ChangeDutyCycle(self.duty_cycle_A)
-        pwmMotorBForwards.ChangeDutyCycle(self.duty_cycle_B)
-        pwmMotorBBackwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorAForwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorABackwards.ChangeDutyCycle(self.duty_cycle_A)
+        self.pwmMotorBForwards.ChangeDutyCycle(self.duty_cycle_B)
+        self.pwmMotorBBackwards.ChangeDutyCycle(self.stop)
 
     # Turn Right
     def right(self):
-        pwmMotorAForwards.ChangeDutyCycle(self.duty_cycle_A)
-        pwmMotorABackwards.ChangeDutyCycle(self.stop)
-        pwmMotorBForwards.ChangeDutyCycle(self.stop)
-        pwmMotorBBackwards.ChangeDutyCycle(self.duty_cycle_B)
+        self.pwmMotorAForwards.ChangeDutyCycle(self.duty_cycle_A)
+        self.pwmMotorABackwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorBForwards.ChangeDutyCycle(self.stop)
+        self.pwmMotorBBackwards.ChangeDutyCycle(self.duty_cycle_B)
 
     # Turn Right
     def tank(self,duty_cycle_A,duty_cycle_B):
         if duty_cycle_A>self.tank_tolerance:
-            pwmMotorAForwards.ChangeDutyCycle(duty_cycle_A)
+            self.pwmMotorAForwards.ChangeDutyCycle(duty_cycle_A)
         elif duty_cycle_A<self.tank_tolerance:            
-            pwmMotorABackwards.ChangeDutyCycle(duty_cycle_A)
+            self.pwmMotorABackwards.ChangeDutyCycle(duty_cycle_A)
         else:
-            pwmMotorAForwards.ChangeDutyCycle(stop)
-            pwmMotorABackwards.ChangeDutyCycle(stop)
+            self.pwmMotorAForwards.ChangeDutyCycle(stop)
+            self.pwmMotorABackwards.ChangeDutyCycle(stop)
         
         if duty_cycle_B>self.tank_tolerance:
-            pwmMotorBForwards.ChangeDutyCycle(duty_cycle_B)
+            self.pwmMotorBForwards.ChangeDutyCycle(duty_cycle_B)
         elif duty_cycle_B<self.tank_tolerance:            
-            pwmMotorBBackwards.ChangeDutyCycle(duty_cycle_B)
+            self.pwmMotorBBackwards.ChangeDutyCycle(duty_cycle_B)
         else:
-            pwmMotorBForwards.ChangeDutyCycle(stop)
-            pwmMotorBBackwards.ChangeDutyCycle(stop)
+            self.pwmMotorBForwards.ChangeDutyCycle(stop)
+            sself.pwmMotorBBackwards.ChangeDutyCycle(stop)
         
 
 robot = Robot()
+time.sleep(0.5)
+
 
 done = False
-try:    
+if True: #try:    
     while done==False:         
 
         for event in pygame.event.get(): # User did something
@@ -181,21 +187,31 @@ try:
             
             # Possible joystick actions: JOYAXISMOTION JOYBALLMOTION JOYBUTTONDOWN JOYBUTTONUP JOYHATMOTION
             if event.type == pygame.JOYBUTTONDOWN:
-                if 'button' in event.dict: self.output("Joystick button {0} pressed".format(event.button))
+                if 'button' in event.dict: print("Joystick button {0} pressed".format(event.button))
                 if event.button == STOP_BUTTON:
                         done = True
                 
             if event.type == pygame.JOYBUTTONUP:
-                if 'button' in event.dict: self.output("Joystick button {0} released".format(event.button))
+                if 'button' in event.dict: print("Joystick button {0} released".format(event.button))
 
             if event.type == pygame.JOYAXISMOTION:
                 print ('did thing with axis {0}'.format(event.dict))
 
             if event.type == pygame.JOYHATMOTION:
                 print ('did thing with hat {0}'.format(event.dict))
+                if event.value==(0,1):
+                    robot.forwards()
+                elif event.value==(0,-1):
+                    robot.backwards()
+                elif event.value==(0,0):
+                    robot.stopmotors()
+                elif event.value==(1,0):
+                    robot.right()
+                elif event.value==(-1,0):
+                    robot.left()
 
-except:
-    print ('grr #monday')
+#except Exception as e:
+#    print ('grr #monday {0}'.format(e))
 
 
 GPIO.cleanup()
