@@ -19,6 +19,7 @@ joystick_name = 'GEN GAME S5'
 print ('testing for favourite named stick {0}'.format(joystick_name))
 
 joystick = None
+STOP_BUTTON = None
 
 for jn in range(pygame.joystick.get_number()):
     j = pygame.joystick.Joystick(jn)
@@ -28,7 +29,24 @@ if joystick is None:
     print ('joystick {0} is not found'.format(joystick_name))
 else:
     print ('found {0}'.format(joystick.get_name()))
-
+    print ('get_numaxes {0}'.format(joystick.get_numaxes()))
+    print ('get_numballs {0}'.format(joystick.get_numballs()))
+    print ('get_numbuttons {0}'.format(joystick.get_numbuttons()))
+    print ('get_numhats {0}'.format(joystick.get_numhats()))
+    if STOP_BUTTON is None:
+        print ('press stop button will be used as stop button')
+        #STOP_BUTTON
+        done = False
+        try:    
+            while done==False:
+                for event in pygame.event.get(): # User did something                
+                    if event.type == pygame.JOYBUTTONDOWN:
+                        STOP_BUTTON = event.button
+                        print ('stop button defined as {0}, you can enter this in your config if you want'.format(STOP_BUTTON))
+                        
+        except:
+            print('grr!')
+        
 
 print ('set up GPIO')
 
@@ -61,6 +79,9 @@ class Robot():
         self.duty_cycle_B = 30
         # Setting the duty cycle to 0 means the motors will not turn
         self.stop = 0
+        
+        # less wiggle room for tank centre joystick false dead spot
+        self.tank_tolerance = 1
 
         print ('initialize GPIO pins')
 
@@ -132,24 +153,50 @@ class Robot():
 
     # Turn Right
     def tank(self,duty_cycle_A,duty_cycle_B):
-        if duty_cycle_A>0:
+        if duty_cycle_A>self.tank_tolerance:
             pwmMotorAForwards.ChangeDutyCycle(duty_cycle_A)
-        elif duty_cycle_A<0:            
+        elif duty_cycle_A<self.tank_tolerance:            
             pwmMotorABackwards.ChangeDutyCycle(duty_cycle_A)
         else:
             pwmMotorAForwards.ChangeDutyCycle(stop)
             pwmMotorABackwards.ChangeDutyCycle(stop)
         
-        if duty_cycle_B>0:
+        if duty_cycle_B>self.tank_tolerance:
             pwmMotorBForwards.ChangeDutyCycle(duty_cycle_B)
-        elif duty_cycle_B<0:            
+        elif duty_cycle_B<self.tank_tolerance:            
             pwmMotorBBackwards.ChangeDutyCycle(duty_cycle_B)
         else:
             pwmMotorBForwards.ChangeDutyCycle(stop)
             pwmMotorBBackwards.ChangeDutyCycle(stop)
         
 
+robot = Robot()
 
- 
+done = False
+try:    
+    while done==False:         
+
+        for event in pygame.event.get(): # User did something
+            if event.type == pygame.QUIT:
+                done = True # Flag that we are done so we exit this loop
+            
+            # Possible joystick actions: JOYAXISMOTION JOYBALLMOTION JOYBUTTONDOWN JOYBUTTONUP JOYHATMOTION
+            if event.type == pygame.JOYBUTTONDOWN:
+                if 'button' in event.dict: self.output("Joystick button {0} pressed".format(event.button))
+                if event.button == STOP_BUTTON:
+                        done = True
+                
+            if event.type == pygame.JOYBUTTONUP:
+                if 'button' in event.dict: self.output("Joystick button {0} released".format(event.button))
+
+            if event.type == pygame.JOYAXISMOTION:
+                print ('did thing with axis {0}'.format(event.dict))
+
+            if event.type == pygame.JOYHATMOTION:
+                print ('did thing with hat {0}'.format(event.dict))
+
+except:
+    print ('grr #monday')
+
 
 GPIO.cleanup()
