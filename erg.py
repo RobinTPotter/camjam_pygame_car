@@ -37,14 +37,16 @@ else:
         print ('press stop button will be used as stop button')
         #STOP_BUTTON
         done = False
-        try:
+        try:    
             while done==False:
                 for event in pygame.event.get(): # User did something                
                     if event.type == pygame.JOYBUTTONDOWN:
                         STOP_BUTTON = event.button
                         print ('stop button defined as {0}, you can enter this in your config if you want'.format(STOP_BUTTON))
+                        
         except:
             print('grr!')
+        
 
 print ('set up GPIO')
 
@@ -77,7 +79,7 @@ class Robot():
         self.duty_cycle_B = 30
         # Setting the duty cycle to 0 means the motors will not turn
         self.stop = 0
-
+        
         # less wiggle room for tank centre joystick false dead spot
         self.tank_tolerance = 1
 
@@ -97,22 +99,22 @@ class Robot():
         print ('start software PWM')        
         
         # Start the software PWM with a duty cycle of 0 (i.e. not moving)
-        self.pwmMotorAForwards.start(self.stop)
-        self.pwmMotorABackwards.start(self.stop)
-        self.pwmMotorBForwards.start(self.stop)
-        self.pwmMotorBBackwards.start(self.stop)
+        self.pwmMotorAForwards.start(stop)
+        self.pwmMotorABackwards.start(stop)
+        self.pwmMotorBForwards.start(stop)
+        self.pwmMotorBBackwards.start(stop)
         
         print ('inititalied robot')
         
 
     # Set the GPIO to software PWM at 'frequency' Hertz
     def set_frequency(self,freq):
-        self.frequency = freq
+    self.frequency = freq
         self.pwmMotorAForwards = GPIO.PWM(pinMotorAForwards, freq)
         self.pwmMotorABackwards = GPIO.PWM(pinMotorABackwards, freq)
         self.pwmMotorBForwards = GPIO.PWM(pinMotorBForwards, freq)
         self.pwmMotorBBackwards = GPIO.PWM(pinMotorBBackwards, freq)
-        print ('frequecy set to {0} on both motors'.format(freq))
+        print ('frequecy set to {0} on both motors'.format(frequency))
 
     # Turn all motors off
     def stopmotors(self):
