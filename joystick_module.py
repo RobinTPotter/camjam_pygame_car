@@ -1,3 +1,5 @@
+"""provides favorite joystick and controls to main code, acts as config also (!)"""
+
 import time  # Import the Time library
 import pygame
 

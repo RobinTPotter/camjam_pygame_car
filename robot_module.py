@@ -1,3 +1,9 @@
+"""initializes RPi.GPIO, assuming installed, sets the pins for motor controls for
+the CamJam EduKit3
+"""
+    
+
+
 import RPi.GPIO as GPIO  # Import the GPIO Library
 
 print ('set up GPIO')
@@ -17,6 +23,7 @@ pinMotorBBackwards = 7
 print ('robot class definition')
 
 class Robot():
+    """Control class for camjam edukit 3 robot motorcar"""
 
     def __init__(self):
 
@@ -58,6 +65,8 @@ class Robot():
 
     # Set the GPIO to software PWM at 'frequency' Hertz
     def set_frequency(self,freq):
+        """change the frequency of the PWM controlling the motor"""
+        
         self.frequency = freq
         self.pwmMotorAForwards = GPIO.PWM(pinMotorAForwards, freq)
         self.pwmMotorABackwards = GPIO.PWM(pinMotorABackwards, freq)
@@ -67,6 +76,8 @@ class Robot():
 
     # Turn all motors off
     def stopmotors(self):
+        """stop the motors, sets the duty cycle (percentage of cycle is on) to stop value (0)"""
+        
         self.pwmMotorAForwards.ChangeDutyCycle(self.stop)
         self.pwmMotorABackwards.ChangeDutyCycle(self.stop)
         self.pwmMotorBForwards.ChangeDutyCycle(self.stop)
@@ -75,6 +86,8 @@ class Robot():
 
     # Turn both motors forwards
     def forwards(self):
+        """sets the duty cycle of both motors in the forward setting to default value duty_cycle_A and B"""
+        
         self.pwmMotorAForwards.ChangeDutyCycle(self.duty_cycle_A)
         self.pwmMotorABackwards.ChangeDutyCycle(self.stop)
         self.pwmMotorBForwards.ChangeDutyCycle(self.duty_cycle_B)
@@ -82,6 +95,8 @@ class Robot():
 
     # Turn both motors backwards
     def backwards(self):
+        """sets the duty cycle of both motors in the backward setting to default value duty_cycle_A and B"""
+        
         self.pwmMotorAForwards.ChangeDutyCycle(self.stop)
         self.pwmMotorABackwards.ChangeDutyCycle(self.duty_cycle_A)
         self.pwmMotorBForwards.ChangeDutyCycle(self.stop)
@@ -89,6 +104,7 @@ class Robot():
 
     # Turn left
     def left(self):
+        """sets the duty cycle of both motors in the backward / forwards setting to default value duty_cycle_A and B"""
         self.pwmMotorAForwards.ChangeDutyCycle(self.stop)
         self.pwmMotorABackwards.ChangeDutyCycle(self.duty_cycle_A)
         self.pwmMotorBForwards.ChangeDutyCycle(self.duty_cycle_B)
@@ -96,6 +112,8 @@ class Robot():
 
     # Turn Right
     def right(self):
+        """sets the duty cycle of both motors in the forwards / backward setting to default value duty_cycle_A and B"""
+        
         self.pwmMotorAForwards.ChangeDutyCycle(self.duty_cycle_A)
         self.pwmMotorABackwards.ChangeDutyCycle(self.stop)
         self.pwmMotorBForwards.ChangeDutyCycle(self.stop)
@@ -103,23 +121,27 @@ class Robot():
 
     # Turn Right
     def tank(self,duty_cycle_A,duty_cycle_B):
+        """tank control function, used to set forwards or backwards depending on positive of negative of either cycle value sent"""
+        
         if duty_cycle_A>self.tank_tolerance:
             self.pwmMotorAForwards.ChangeDutyCycle(duty_cycle_A)
-        elif duty_cycle_A<self.tank_tolerance:            
-            self.pwmMotorABackwards.ChangeDutyCycle(duty_cycle_A)
+        elif duty_cycle_A<-self.tank_tolerance:            
+            self.pwmMotorABackwards.ChangeDutyCycle(abs(duty_cycle_A))
         else:
-            self.pwmMotorAForwards.ChangeDutyCycle(stop)
-            self.pwmMotorABackwards.ChangeDutyCycle(stop)
+            self.pwmMotorAForwards.ChangeDutyCycle(self.stop)
+            self.pwmMotorABackwards.ChangeDutyCycle(self.stop)
         
         if duty_cycle_B>self.tank_tolerance:
             self.pwmMotorBForwards.ChangeDutyCycle(duty_cycle_B)
-        elif duty_cycle_B<self.tank_tolerance:            
-            self.pwmMotorBBackwards.ChangeDutyCycle(duty_cycle_B)
+        elif duty_cycle_B<-self.tank_tolerance:            
+            self.pwmMotorBBackwards.ChangeDutyCycle(abs(duty_cycle_B))
         else:
-            self.pwmMotorBForwards.ChangeDutyCycle(stop)
-            sself.pwmMotorBBackwards.ChangeDutyCycle(stop)
+            self.pwmMotorBForwards.ChangeDutyCycle(self.stop)
+            sself.pwmMotorBBackwards.ChangeDutyCycle(self.stop)
     
     def goodbye(self):
+        """used to reset and remove GPIO pipes created in filesystem"""        
+        
         GPIO.cleanup()
         
 if __name__ == '__main__':
