@@ -22,21 +22,27 @@ if True: #try:
         for event in pygame.event.get(): # User did something
             if event.type == pygame.QUIT:
                 done = True # Flag that we are done so we exit this loop
-            
+
             # Possible joystick actions: JOYAXISMOTION JOYBALLMOTION JOYBUTTONDOWN JOYBUTTONUP JOYHATMOTION
             if event.type == pygame.JOYBUTTONDOWN:
                 if 'button' in event.dict: print("Joystick button {0} pressed".format(event.button))
                 if event.button == STOP_BUTTON:
                         done = True
-                
+
             if event.type == pygame.JOYBUTTONUP:
                 if 'button' in event.dict: print("Joystick button {0} released".format(event.button))
 
             if event.type == pygame.JOYAXISMOTION:
                 print ('did thing with axis {0}'.format(event.dict))                
                 
-                left = -joystick.get_axis(LEFT_UP_DOWN_AXIS) * DUTY_CYCLE_REMAP_MAX
-                right = -joystick.get_axis(RIGHT_UP_DOWN_AXIS) * DUTY_CYCLE_REMAP_MAX
+                _left = joystick.get_axis(LEFT_UP_DOWN_AXIS)
+                if _left!=0.0: _lsign = _left/abs(_left)
+                else: _lsign = 1
+                left = -_lsign*_left*_left * DUTY_CYCLE_REMAP_MAX
+                _right = joystick.get_axis(RIGHT_UP_DOWN_AXIS) 
+                if _right!=0.0: _rsign = _right/abs(_right)
+                else: _rsign = 1
+                right = -_rsign*_right*_right * DUTY_CYCLE_REMAP_MAX
                 
                 robot.tank(
                     int(left),
