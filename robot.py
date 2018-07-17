@@ -5,7 +5,7 @@ import pygame
 import sys
 
 # inititalize pygame
-from joystick_module import joystick, STOP_BUTTON, LEFT_UP_DOWN_AXIS, RIGHT_UP_DOWN_AXIS
+from joystick_module import joystick, STOP_BUTTON, LEFT_UP_DOWN_AXIS, RIGHT_UP_DOWN_AXIS, DUTY_CYCLE_REMAP_MAX
 
 if joystick is None:
     print ('joystick is none')
@@ -35,8 +35,8 @@ if True: #try:
             if event.type == pygame.JOYAXISMOTION:
                 print ('did thing with axis {0}'.format(event.dict))                
                 
-                left = joystick.get_axis(LEFT_UP_DOWN_AXIS) * DUTY_CYCLE_REMAP_MAX
-                right = joystick.get_axis(RIGHT_UP_DOWN_AXIS) * DUTY_CYCLE_REMAP_MAX
+                left = -joystick.get_axis(LEFT_UP_DOWN_AXIS) * DUTY_CYCLE_REMAP_MAX
+                right = -joystick.get_axis(RIGHT_UP_DOWN_AXIS) * DUTY_CYCLE_REMAP_MAX
                 
                 robot.tank(
                     int(left),

@@ -137,7 +137,7 @@ class Robot():
             self.pwmMotorBBackwards.ChangeDutyCycle(abs(duty_cycle_B))
         else:
             self.pwmMotorBForwards.ChangeDutyCycle(self.stop)
-            sself.pwmMotorBBackwards.ChangeDutyCycle(self.stop)
+            self.pwmMotorBBackwards.ChangeDutyCycle(self.stop)
     
     def goodbye(self):
         """used to reset and remove GPIO pipes created in filesystem"""        

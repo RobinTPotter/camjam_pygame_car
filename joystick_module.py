@@ -12,8 +12,8 @@ pygame.joystick.init()
 
 joystick_name = 'GEN GAME S5'
 STOP_BUTTON = 10 #None
-LEFT_UP_DOWN_AXIS = 0
-RIGHT_UP_DOWN_AXIS = 2
+LEFT_UP_DOWN_AXIS = 1
+RIGHT_UP_DOWN_AXIS = 3
 
 # joystick control parameters (todo move to config)
 
