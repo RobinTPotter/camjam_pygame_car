@@ -16,18 +16,21 @@ udevadm info -a -p /sys/devices/platform/pcspkr/input/input1
 
 you can find the top level specific device you need followed by its parents:
 
-```  looking at device '/devices/platform/pcspkr/input/input1':
-    KERNEL=="input1"
-    SUBSYSTEM=="input"
-    DRIVER==""
-    ATTR{name}=="PC Speaker"
-    ATTR{phys}=="isa0061/input0"
-    ATTR{uniq}==""
-    ATTR{properties}=="0"
+```
+looking at device '/devices/platform/pcspkr/input/input1':
+KERNEL=="input1"
+SUBSYSTEM=="input"
+DRIVER==""
+ATTR{name}=="PC Speaker"
+ATTR{phys}=="isa0061/input0"
+ATTR{uniq}==""
+ATTR{properties}=="0"
 ```
 after the "looking at" line, these are the "filters" that identify the device so along with the directive to say whether the rule acts when "add" or "remove" action occurs, and, you describe what you want to happen the rule might become:
 
-```ACTION=="add", KERNEL=="input1", SUBSYSTEM=="input", DRIVER=="", ATTR{name}=="PC Speaker", ATTR{phys}=="isa0061/input0", ATTR{uniq}=="", ATTR{properties}=="0", RUN+="/home/pi/alarm_bells.sh"```
+```
+ACTION=="add", KERNEL=="input1", SUBSYSTEM=="input", DRIVER=="", ATTR{name}=="PC Speaker", ATTR{phys}=="isa0061/input0", ATTR{uniq}=="", ATTR{properties}=="0", RUN+="/home/pi/alarm_bells.sh"
+```
 
 the really big thing that you may happen accross is the fact that when udev starts, the filesystem is completely read only, and that is how it remembers it untill you restart udev. i.e. you cannot write to any part of the system regardless of who you are. I set up a root crontab to restart the udev service every two mins.
 
