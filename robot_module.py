@@ -1,19 +1,10 @@
 """initializes RPi.GPIO, assuming installed, sets the pins for motor controls for
 the CamJam EduKit3
 """
-    
-
 
 import RPi.GPIO as GPIO  # Import the GPIO Library
 
-print ('set up GPIO')
-
-# Set the GPIO modes
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-
 print ('set up GPIO pins')
-
 # Set variables for the GPIO motor pins
 pinMotorAForwards = 10
 pinMotorABackwards = 9
@@ -26,6 +17,11 @@ class Robot():
     """Control class for camjam edukit 3 robot motorcar"""
 
     def __init__(self):
+
+        print ('set up GPIO')
+        # Set the GPIO modes
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
 
         print ('initializing class variables')
 
